@@ -38,7 +38,7 @@ class PenilaianController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Simpan alternatif
+        // Simpan alternatif
         $alternatif = Alternatif::create([
             'nama_alternatif' => $request->nama_alternatif
         ]);
@@ -48,9 +48,7 @@ class PenilaianController extends Controller
 
         $input = [];
 
-        // ============================
-        // SIMPAN INPUT + CF
-        // ============================
+        // Simpan nilai alternatif & hitung CF
         foreach ($request->kriteria as $id_kriteria => $id_sub) {
 
             $sub = SubKriteria::find($id_sub);
@@ -79,10 +77,7 @@ class PenilaianController extends Controller
             }
         }
 
-        // ============================
-        // 🔥 NAIVE BAYES (LOG VERSION)
-        // ============================
-
+        // Hitung Naive Bayes
         $totalData = DB::table('data_training')->count();
 
         $totalLayak = DB::table('data_training')
@@ -123,22 +118,16 @@ class PenilaianController extends Controller
             $logTidak += log($probTidak);
         }
 
-        // ============================
-        // HASIL NB
-        // ============================
-
+        // Hasil akhir
         $hasil = $logLayak > $logTidak ? 'Layak' : 'Tidak Layak';
 
-        // supaya tetap bisa ditampilkan angka
+        // Supaya tetap bisa ditampilkan angka
         $expLayak = exp($logLayak);
         $expTidak = exp($logTidak);
 
         $nilaiNB = $expLayak / ($expLayak + $expTidak);
 
-        // ============================
-        // SIMPAN HASIL
-        // ============================
-
+        // Simpan hasil perhitungan
         HasilPerhitungan::create([
             'id_alternatif' => $alternatif->id_alternatif,
             'nilai_cb' => $nilaiNB,
