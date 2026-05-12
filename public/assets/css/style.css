@@ -22126,12 +22126,12 @@ select.form-control[data-multiselectsplitter-firstselect-selector], select.form-
 }
 .auth-main .auth-wrapper.v3 .auth-form {
   flex-direction: column;
-  background: url("../images/authentication/img-auth-bg.svg");
+  background: url("../images/authentication/img-auth-bg.avif");
   min-height: 100vh;
   padding: 24px;
   background-repeat: no-repeat;
-  background-size: auto 75%;
-  background-position: left center;
+  background-size: 100%;
+  background-position: center;
   position: relative;
   justify-content: space-between;
 }
