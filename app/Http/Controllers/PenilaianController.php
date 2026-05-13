@@ -7,6 +7,7 @@ use App\Models\HasilPerhitungan;
 use App\Models\Kriteria;
 use App\Models\NilaiAlternatif;
 use App\Models\SubKriteria;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,14 +15,19 @@ class PenilaianController extends Controller
 {
     public function index()
     {
-        $data = Alternatif::with('hasil')
-            ->latest()
-            ->get();
+        $data = Alternatif::whereDoesntHave('hasil', function ($query) {
+            $query->where('status', 'Menunggu');
+        })->with('hasil')->latest()->get();
+
+        $dataMenunggu = Alternatif::whereHas('hasil', function ($query) {
+            $query->where('status', 'Menunggu');
+        })->with('hasil')->latest()->get();
 
         return view('app', [
             'page' => 'penilaian.index',
             'title' => 'Penilaian Alternatif',
-            'data' => $data
+            'data' => $data,
+            'dataMenunggu' => $dataMenunggu,
         ]);
     }
 
@@ -161,5 +167,21 @@ class PenilaianController extends Controller
         $alternatif->delete();
 
         return redirect()->route('penilaian.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function exportPdf($id)
+    {
+        $data = Alternatif::with([
+            'hasil',
+            'nilaiAlternatif.kriteria',
+            'nilaiAlternatif.subKriteria'
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('penilaian.pdf', compact('data'));
+
+        return $pdf->download('hasil-analisis.pdf');
+
+        // kalau ingin preview di browser:
+        // return $pdf->stream('hasil-analisis.pdf');
     }
 }

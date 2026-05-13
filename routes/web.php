@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/approval/approved/{id}', [ApprovalController::class, 'approved'])->name('approval.approved');
         Route::get('/approval/rejected/{id}', [ApprovalController::class, 'rejected'])->name('approval.rejected');
 
+        Route::get('/penilaian/export-pdf/{id}', [PenilaianController::class, 'exportPdf'])->name('penilaian.exportPdf');
         // Master Data
         Route::resource('kriteria', KriteriaController::class);
         Route::resource('sub_kriteria', SubKriteriaController::class);

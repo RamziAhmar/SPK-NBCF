@@ -13,7 +13,8 @@ class HasilPerhitungan extends Model
         'id_alternatif',
         'nilai_cb',
         'nilai_cf',
-        'hasil_akhir'
+        'hasil_akhir',
+        'status'
     ];
 
     public function alternatif()

@@ -16,6 +16,12 @@
                 <strong>Nama Alternatif :</strong> {{ $data->nama_alternatif }}
             </div>
 
+            <div class="mb-3">
+                <strong>Status Approval : </strong><span
+                    class="badge bg-{{ $data->hasil->status == 'Disetujui' ? 'success' : 'danger' }}">
+                    {{ $data->hasil->status }} </span>
+            </div>
+
             <hr>
 
             {{-- TABEL KRITERIA --}}
@@ -92,6 +98,12 @@
                 @endif
             </div>
 
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{{ route('penilaian.exportPdf', $data->id_alternatif) }}" class="btn btn-primary"
+                    target="_blank">
+                    Export PDF
+                </a>
+            </div>
         </div>
     </div>
 </div>
