@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('nilai_cb', 5, 4)->nullable();
             $table->decimal('nilai_cf', 5, 4)->nullable();
             $table->enum('hasil_akhir', ['Layak', 'Tidak Layak']);
+            $table->enum('status', ['Menunggu', 'Ditolak', 'Disetujui'])->default('Menunggu');
             $table->timestamps();
             
             $table->foreign('id_alternatif')->references('id_alternatif')->on('alternatif')->onDelete('cascade');
