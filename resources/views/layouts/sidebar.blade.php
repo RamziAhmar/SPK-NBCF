@@ -2,9 +2,9 @@
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="{{ route('dashboard') }}" class="b-brand text-primary">
+            <a href="{{ route('dashboard') }}" class="b-brand text-primary text-center">
                 <!-- ========   Change your logo from here   ============ -->
-                <img src="/assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
+                <img src="/assets/images/logo-pt.png" class="img-fluid logo-lg" style="max-width: 50%;" alt="logo">
             </a>
         </div>
         <div class="navbar-content">

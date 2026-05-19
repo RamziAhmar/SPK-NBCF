@@ -39,11 +39,7 @@
                                             data-bs-target="#modalRejected{{ $item->id_hasil_perhitungan }}"><i
                                                 class="ti ti-letter-x"></i> Tolak</button>
                                     @else
-                                        <span
-                                            class="badge bg-{{ $item->status == 'Disetujui' ? 'success' : 'danger' }}">
-                                            <i class="ti ti-{{ $item->status == 'Disetujui' ? 'check' : 'letter-x' }}"></i>
-                                            {{ $item->status }}
-                                        </span>
+                                         <p class="text-{{ $item->status == 'Disetujui' ? 'success' : 'danger' }} mb-0"><i class="ti ti-{{ $item->status == 'Disetujui' ? 'check' : 'letter-x' }}"></i> {{ $item->status }}</p>
                                     @endif
                                 </td>
                                 <td class="text-center">

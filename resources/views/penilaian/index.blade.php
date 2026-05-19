@@ -104,8 +104,6 @@
                                 </td>
                                 <td class="text-center">
                                     @if ($item->hasil->status == 'Disetujui')
-                                        {{-- <a href="{{ route('penilaian.show', $item->id_alternatif) }}"
-                                            class="btn btn-sm btn-success"><i class="ti ti-eye me-1"></i> Disetujui</a> --}}
                                         <a href="{{ route('penilaian.show', $item->id_alternatif) }}"><span
                                                 class="badge bg-success"><i class="ti ti-eye me-1"></i>
                                                 {{ $item->hasil->status }}

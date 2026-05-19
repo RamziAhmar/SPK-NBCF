@@ -49,7 +49,7 @@
         <div class="auth-wrapper v3">
             <div class="auth-form">
                 <div class="auth-header">
-                    <a href="#"><img src="{{ asset('') }}assets/images/logo-dark.svg" alt="img"></a>
+                    <a href="#"><img src="{{ asset('') }}assets/images/logo-pt.png" style="max-width: 50%;" alt="img"></a>
                 </div>
                 <div class="card my-5">
                     <div class="card-body">
@@ -87,7 +87,7 @@
                 <div class="auth-footer row">
                     <!-- <div class=""> -->
                     <div class="col my-1">
-                        <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
+                        <p class="m-0">Copyright © <a href="#">Laode Hasrun</a></p>
                     </div>
                     <!-- </div> -->
                 </div>
