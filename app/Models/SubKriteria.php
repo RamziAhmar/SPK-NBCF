@@ -13,7 +13,8 @@ class SubKriteria extends Model
         'id_kriteria',
         'nama_sub',
         'keterangan',
-        'nilai'
+        'md',
+        'mb'
     ];
 
     public function kriteria()

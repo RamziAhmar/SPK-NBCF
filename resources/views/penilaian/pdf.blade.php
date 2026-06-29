@@ -58,7 +58,9 @@
 
 <body>
 
-    <h2 class="title">Hasil Analisis Kelayakan Bahan Baku</h2>
+    <h2 class="title">
+        Laporan Hasil Analisis Kelayakan Bahan Beling
+    </h2>
 
     {{-- IDENTITAS --}}
     <div>
@@ -92,12 +94,12 @@
         </thead>
         <tbody>
             @foreach ($data->nilaiAlternatif as $n)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $n->kriteria->nama_kriteria }}</td>
-                    <td>{{ $n->subKriteria->nama_sub }}</td>
-                    <td>{{ $n->subKriteria->nilai }}</td>
-                </tr>
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $n->kriteria->nama_kriteria }}</td>
+                <td>{{ $n->subKriteria->nama_sub }}</td>
+                <td>{{ $n->subKriteria->nilai }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>
@@ -105,17 +107,63 @@
     <hr>
 
     {{-- HASIL --}}
-    <h3>Hasil Perhitungan</h3>
+    <h3>Data Penilaian</h3>
 
-    <table style="width:50%">
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kriteria</th>
+                <th>Sub Kriteria</th>
+                <th>MB</th>
+                <th>MD</th>
+                <th>CF Pakar</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach ($data->nilaiAlternatif as $n)
+
+            <tr>
+
+                <td>{{ $loop->iteration }}</td>
+
+                <td>{{ $n->kriteria->nama_kriteria }}</td>
+
+                <td>{{ $n->subKriteria->nama_sub }}</td>
+
+                <td>{{ number_format($n->subKriteria->mb,2) }}</td>
+
+                <td>{{ number_format($n->subKriteria->md,2) }}</td>
+
+                <td>{{ number_format($n->subKriteria->nilai,2) }}</td>
+
+            </tr>
+
+            @endforeach
+
+        </tbody>
+
+    </table>
+
+    <hr>
+
+    {{-- HASIL PERHITUNGAN --}}
+    <h3>Hasil Perhitungan Certainty Factor</h3>
+
+    <table style="width:60%">
+
         <tr>
-            <th>Metode Naive Bayes</th>
-            <td>{{ number_format($data->hasil->nilai_cb, 4) }}</td>
+            <th>Nilai Certainty Factor</th>
+            <td>{{ number_format($data->hasil->nilai_cf,4) }}</td>
         </tr>
+
         <tr>
-            <th>Certainty Factor</th>
-            <td>{{ number_format($data->hasil->nilai_cf, 4) }}</td>
+            <th>Persentase Keyakinan</th>
+            <td>{{ number_format($data->hasil->nilai_cf*100,2) }}%</td>
         </tr>
+
     </table>
 
     <hr>
@@ -133,24 +181,73 @@
 
     {{-- INTERPRETASI --}}
     <div class="alert-info">
-        <strong>Interpretasi:</strong><br><br>
 
-        Keputusan kelayakan ditentukan menggunakan metode
-        <b>Naive Bayes</b>
-        berdasarkan probabilitas dari data training.
-
-        Nilai <b>Certainty Factor</b> menunjukkan tingkat keyakinan sistem terhadap hasil tersebut.
+        <strong>Interpretasi Hasil</strong>
 
         <br><br>
 
-        @if ($data->hasil->nilai_cf >= 0.8)
-            Tingkat keyakinan sistem <b>tinggi</b>.
-        @elseif($data->hasil->nilai_cf >= 0.6)
-            Tingkat keyakinan sistem <b>cukup</b>.
+        Nilai Certainty Factor menunjukkan tingkat keyakinan sistem terhadap keputusan
+        kelayakan bahan beling.
+
+        <br><br>
+
+        @php
+
+        $cf = $data->hasil->nilai_cf;
+
+        @endphp
+
+        @if($cf >= 0.8)
+
+        Sistem memiliki tingkat keyakinan
+        <b>Sangat Tinggi</b>
+        ({{ number_format($cf*100,2) }}%).
+
+        @elseif($cf >= 0.6)
+
+        Sistem memiliki tingkat keyakinan
+        <b>Tinggi</b>
+        ({{ number_format($cf*100,2) }}%).
+
+        @elseif($cf >= 0.4)
+
+        Sistem memiliki tingkat keyakinan
+        <b>Sedang</b>
+        ({{ number_format($cf*100,2) }}%).
+
+        @elseif($cf >= 0.2)
+
+        Sistem memiliki tingkat keyakinan
+        <b>Rendah</b>
+        ({{ number_format($cf*100,2) }}%).
+
         @else
-            Tingkat keyakinan sistem <b>rendah</b>.
+
+        Sistem memiliki tingkat keyakinan
+        <b>Sangat Rendah</b>
+        ({{ number_format($cf*100,2) }}%).
+
         @endif
+
     </div>
+
+    <br><br>
+
+    <table style="border:none">
+
+        <tr style="border:none">
+
+            <td style="border:none">
+
+                Dicetak pada :
+
+                {{ \Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}
+
+            </td>
+
+        </tr>
+
+    </table>
 
 </body>
 

@@ -29,22 +29,26 @@
 
             <div class="table-responsive">
                 <table class="table table-bordered">
-                    <thead class="table-light">
+                    <thead class="table-light text-center">
                         <tr>
                             <th>No</th>
                             <th>Kriteria</th>
                             <th>Sub Kriteria</th>
-                            <th>Nilai</th>
+                            <th>MB</th>
+                            <th>MD</th>
+                            <th>CF Pakar</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data->nilaiAlternatif as $n)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $n->kriteria->nama_kriteria }}</td>
-                                <td>{{ $n->subKriteria->nama_sub }}</td>
-                                <td>{{ $n->subKriteria->nilai }}</td>
-                            </tr>
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $n->kriteria->nama_kriteria }}</td>
+                            <td>{{ $n->subKriteria->nama_sub }}</td>
+                            <td class="text-center">{{ number_format($n->subKriteria->mb,2) }}</td>
+                            <td class="text-center">{{ number_format($n->subKriteria->md,2) }}</td>
+                            <td class="text-center">{{ number_format($n->subKriteria->nilai,2) }}</td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -53,16 +57,17 @@
             <hr>
 
             {{-- HASIL PERHITUNGAN --}}
-            <h5 class="mb-3">Hasil Perhitungan</h5>
+            <h5 class="mb-3">Hasil Perhitungan Certainty Factor</h5>
 
             <table class="table table-bordered w-50">
                 <tr>
-                    <th>Metode Naive Bayes</th>
-                    <td>{{ number_format($data->hasil->nilai_cb, 4) }}</td>
+                    <th width="50%">Nilai Certainty Factor</th>
+                    <td>{{ number_format($data->hasil->nilai_cf,4) }}</td>
                 </tr>
+
                 <tr>
-                    <th>Certainty Factor</th>
-                    <td>{{ number_format($data->hasil->nilai_cf, 4) }}</td>
+                    <th>Persentase Keyakinan</th>
+                    <td>{{ number_format($data->hasil->nilai_cf * 100,2) }} %</td>
                 </tr>
             </table>
 
@@ -73,6 +78,7 @@
 
             <div class="mb-3">
                 <strong>Hasil Kelayakan :</strong>
+
                 <span class="badge bg-{{ $data->hasil->hasil_akhir == 'Layak' ? 'success' : 'danger' }}">
                     {{ $data->hasil->hasil_akhir }}
                 </span>
@@ -80,22 +86,48 @@
 
             {{-- INTERPRETASI --}}
             <div class="alert alert-info mt-3">
-                <strong>Interpretasi:</strong><br>
 
-                Keputusan kelayakan ditentukan menggunakan metode <b>Naive Bayes</b>
-                berdasarkan probabilitas dari data training.
+                <h6><b>Interpretasi Hasil</b></h6>
 
-                Nilai <b>Certainty Factor</b> menunjukkan tingkat keyakinan sistem terhadap hasil tersebut.
+                Sistem menentukan tingkat keyakinan kelayakan bahan beling menggunakan metode
+                <b>Certainty Factor (CF)</b>.
 
-                <br><br>
+                Nilai Certainty Factor menunjukkan tingkat keyakinan sistem terhadap hasil keputusan
+                yang diberikan.
 
-                @if ($data->hasil->nilai_cf >= 0.8)
-                    Tingkat keyakinan sistem <b>tinggi</b>.
-                @elseif($data->hasil->nilai_cf >= 0.6)
-                    Tingkat keyakinan sistem <b>cukup</b>.
+                <hr>
+
+                @php
+                $cf = $data->hasil->nilai_cf;
+                @endphp
+
+                @if($cf >= 0.8)
+
+                <b>Tingkat Keyakinan :</b> Sangat Tinggi
+                ({{ number_format($cf*100,2) }}%)
+
+                @elseif($cf >= 0.6)
+
+                <b>Tingkat Keyakinan :</b> Tinggi
+                ({{ number_format($cf*100,2) }}%)
+
+                @elseif($cf >= 0.4)
+
+                <b>Tingkat Keyakinan :</b> Sedang
+                ({{ number_format($cf*100,2) }}%)
+
+                @elseif($cf >= 0.2)
+
+                <b>Tingkat Keyakinan :</b> Rendah
+                ({{ number_format($cf*100,2) }}%)
+
                 @else
-                    Tingkat keyakinan sistem <b>rendah</b>.
+
+                <b>Tingkat Keyakinan :</b> Sangat Rendah
+                ({{ number_format($cf*100,2) }}%)
+
                 @endif
+
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">

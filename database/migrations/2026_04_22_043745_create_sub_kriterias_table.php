@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreign('id_kriteria')->references('id_kriteria')->on('kriteria')->onDelete('cascade');
             $table->string('nama_sub');
             $table->string('keterangan')->nullable();
+            $table->decimal('md', 3, 2);
+            $table->decimal('mb', 3, 2);
             $table->decimal('nilai', 3, 2);
             $table->timestamps();
         });

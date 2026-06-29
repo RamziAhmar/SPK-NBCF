@@ -56,13 +56,6 @@
                         </a>
                     </li>
 
-                    <li class="pc-item {{ request()->routeIs('data_training.*') ? 'active' : '' }}">
-                        <a href="{{ route('data_training.index') }}" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-file"></i></span>
-                            <span class="pc-mtext">Data Training</span>
-                        </a>
-                    </li>
-
                     <li class="pc-item {{ request()->routeIs('user.*') ? 'active' : '' }}">
                         <a href="{{ route('user.index') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-user"></i></span>

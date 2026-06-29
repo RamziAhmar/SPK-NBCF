@@ -44,6 +44,11 @@ class PenilaianController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nama_alternatif' => 'required',
+            'kriteria' => 'required|array'
+        ]);
+
         // Simpan alternatif
         $alternatif = Alternatif::create([
             'nama_alternatif' => $request->nama_alternatif
@@ -52,96 +57,65 @@ class PenilaianController extends Controller
         $cfCombine = 0;
         $first = true;
 
-        $input = [];
-
-        // Simpan nilai alternatif & hitung CF
         foreach ($request->kriteria as $id_kriteria => $id_sub) {
 
-            $sub = SubKriteria::find($id_sub);
+            $sub = SubKriteria::findOrFail($id_sub);
 
+            // Simpan nilai alternatif
             NilaiAlternatif::create([
-                'id_alternatif' => $alternatif->id_alternatif,
-                'id_kriteria' => $id_kriteria,
+                'id_alternatif'   => $alternatif->id_alternatif,
+                'id_kriteria'     => $id_kriteria,
                 'id_sub_kriteria' => $id_sub
             ]);
 
-            // mapping ke field dataset
-            if ($id_kriteria == 1) $input['warna_kaca_id'] = $id_sub;
-            if ($id_kriteria == 2) $input['kebersihan_id'] = $id_sub;
-            if ($id_kriteria == 3) $input['ukuran_id'] = $id_sub;
-            if ($id_kriteria == 4) $input['kontaminasi_id'] = $id_sub;
-            if ($id_kriteria == 5) $input['kelembaban_id'] = $id_sub;
+            /*
+        |--------------------------------------------------------------------------
+        | Perhitungan Certainty Factor
+        |--------------------------------------------------------------------------
+        */
 
-            // CF tetap
-            $nilai = $sub->nilai;
+            // Hitung CF tiap evidence
+            $cf = $sub->mb - $sub->md;
 
+            // Kombinasi CF
             if ($first) {
-                $cfCombine = $nilai;
+
+                $cfCombine = $cf;
                 $first = false;
             } else {
-                $cfCombine = $cfCombine + ($nilai * (1 - $cfCombine));
+
+                $cfCombine = $cfCombine + ($cf * (1 - $cfCombine));
             }
         }
 
-        // Hitung Naive Bayes
-        $totalData = DB::table('data_training')->count();
+        /*
+    |--------------------------------------------------------------------------
+    | Menentukan hasil akhir
+    |--------------------------------------------------------------------------
+    */
 
-        $totalLayak = DB::table('data_training')
-            ->where('hasil', 'Layak')
-            ->count();
+        if ($cfCombine >= 0.80) {
 
-        $totalTidak = DB::table('data_training')
-            ->where('hasil', 'Tidak Layak')
-            ->count();
+            $hasil = 'Layak';
+        } else {
 
-        // prior → pakai log
-        $logLayak = log($totalLayak / $totalData);
-        $logTidak = log($totalTidak / $totalData);
-
-        foreach ($input as $field => $value) {
-
-            // jumlah kategori (default 4 tiap kriteria)
-            $jumlahKategori = 4;
-
-            // Layak
-            $countLayak = DB::table('data_training')
-                ->where($field, $value)
-                ->where('hasil', 'Layak')
-                ->count();
-
-            $probLayak = ($countLayak + 1) / ($totalLayak + $jumlahKategori);
-
-            // Tidak Layak
-            $countTidak = DB::table('data_training')
-                ->where($field, $value)
-                ->where('hasil', 'Tidak Layak')
-                ->count();
-
-            $probTidak = ($countTidak + 1) / ($totalTidak + $jumlahKategori);
-
-            // tambah log
-            $logLayak += log($probLayak);
-            $logTidak += log($probTidak);
+            $hasil = 'Tidak Layak';
         }
 
-        // Hasil akhir
-        $hasil = $logLayak > $logTidak ? 'Layak' : 'Tidak Layak';
-
-        // Supaya tetap bisa ditampilkan angka
-        $expLayak = exp($logLayak);
-        $expTidak = exp($logTidak);
-
-        $nilaiNB = $expLayak / ($expLayak + $expTidak);
-
-        // Simpan hasil perhitungan
+        /*
+    |--------------------------------------------------------------------------
+    | Simpan hasil
+    |--------------------------------------------------------------------------
+    */
         HasilPerhitungan::create([
             'id_alternatif' => $alternatif->id_alternatif,
-            'nilai_cb' => $nilaiNB,
-            'nilai_cf' => $cfCombine,
-            'hasil_akhir' => $hasil
+            'nilai_cf'      => round($cfCombine, 4),
+            'hasil_akhir'   => $hasil,
+            'status'        => 'Menunggu'
         ]);
 
-        return redirect()->route('penilaian.show', $alternatif->id_alternatif);
+        return redirect()->route('penilaian.show', $alternatif->id_alternatif)
+            ->with('success', 'Penilaian berhasil dilakukan.');
     }
 
     public function show($id)

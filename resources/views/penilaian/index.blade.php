@@ -22,7 +22,6 @@
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center">Nama Alternatif</th>
-                            <th class="text-center">Naive Bayes</th>
                             <th class="text-center">Certainty Factor</th>
                             <th class="text-center">Hasil</th>
                             <th class="text-center">Status</th>
@@ -34,7 +33,6 @@
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $item->nama_alternatif }}</td>
-                                <td>{{ number_format($item->hasil->nilai_cb ?? 0, 4) }}</td>
                                 <td>{{ number_format($item->hasil->nilai_cf ?? 0, 4) }}</td>
                                 <td class="text-center">
                                     <span
@@ -82,7 +80,6 @@
                         <tr>
                             <th class="text-center">No</th>
                             <th class="text-center">Nama Alternatif</th>
-                            <th class="text-center">Naive Bayes</th>
                             <th class="text-center">Certainty Factor</th>
                             <th class="text-center">Hasil</th>
                             <th class="text-center">Status</th>
@@ -94,7 +91,6 @@
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $item->nama_alternatif }}</td>
-                                <td>{{ number_format($item->hasil->nilai_cb ?? 0, 4) }}</td>
                                 <td>{{ number_format($item->hasil->nilai_cf ?? 0, 4) }}</td>
                                 <td class="text-center">
                                     <span

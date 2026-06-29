@@ -29,8 +29,14 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label">Nilai</label>
-                    <input type="number" class="form-control" placeholder="Nilai" name="nilai" step="0.1"
+                    <label class="form-label">MD</label>
+                    <input type="number" class="form-control" placeholder="Nilai" name="md" step="0.1"
+                        min="0" max="1" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label">MB</label>
+                    <input type="number" class="form-control" placeholder="Nilai" name="mb" step="0.1"
                         min="0" max="1" required>
                 </div>
 
