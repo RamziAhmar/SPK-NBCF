@@ -40,20 +40,33 @@ class SubKriteriaController extends Controller
         ]);
     }
 
-    // 🔹 Simpan data
+    // Simpan data
     public function store(Request $request)
     {
         $request->validate([
             'id_kriteria' => 'required|exists:kriteria,id_kriteria',
-            'nama_sub' => 'required',
-            'keterangan' => 'required',
-            'nilai' => 'required|decimal:1|min:0|max:1'
+            'nama_sub'     => 'required|string|max:255',
+            'keterangan'   => 'required|string',
+            'mb'           => 'required|numeric|min:0|max:1',
+            'md'           => 'required|numeric|min:0|max:1',
         ]);
 
-        SubKriteria::create($request->all());
+        // Menghitung CF Pakar
+        // CF(H,E) = MB(H,E) - MD(H,E)
+        $nilaiCF = $request->mb - $request->md;
 
-        return redirect()->route('sub_kriteria.index')
-            ->with('success', 'Data berhasil ditambahkan');
+        SubKriteria::create([
+            'id_kriteria' => $request->id_kriteria,
+            'nama_sub'     => $request->nama_sub,
+            'keterangan'   => $request->keterangan,
+            'mb'           => $request->mb,
+            'md'           => $request->md,
+            'nilai'        => round($nilaiCF, 2),
+        ]);
+
+        return redirect()
+            ->route('sub_kriteria.index')
+            ->with('success', 'Data sub kriteria berhasil ditambahkan');
     }
 
     // 🔹 Form edit
@@ -70,21 +83,35 @@ class SubKriteriaController extends Controller
     }
 
     // 🔹 Update data
+    // Update data
     public function update(Request $request, $id)
     {
         $data = SubKriteria::findOrFail($id);
 
         $request->validate([
             'id_kriteria' => 'required|exists:kriteria,id_kriteria',
-            'nama_sub' => 'required',
-            'keterangan' => 'required',
-            'nilai' => 'required|decimal:1|min:0|max:1'
+            'nama_sub'     => 'required|string|max:255',
+            'keterangan'   => 'required|string',
+            'mb'           => 'required|numeric|min:0|max:1',
+            'md'           => 'required|numeric|min:0|max:1',
         ]);
 
-        $data->update($request->all());
+        // Menghitung ulang CF Pakar
+        // CF(H,E) = MB(H,E) - MD(H,E)
+        $nilaiCF = $request->mb - $request->md;
 
-        return redirect()->route('sub_kriteria.index')
-            ->with('success', 'Data berhasil diupdate');
+        $data->update([
+            'id_kriteria' => $request->id_kriteria,
+            'nama_sub'     => $request->nama_sub,
+            'keterangan'   => $request->keterangan,
+            'mb'           => $request->mb,
+            'md'           => $request->md,
+            'nilai'        => round($nilaiCF, 2),
+        ]);
+
+        return redirect()
+            ->route('sub_kriteria.index')
+            ->with('success', 'Data sub kriteria berhasil diubah');
     }
 
     // 🔹 Hapus data
