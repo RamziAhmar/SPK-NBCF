@@ -27,9 +27,4 @@ class SubKriteria extends Model
     {
         return $this->hasMany(NilaiAlternatif::class, 'id_sub_kriteria');
     }
-
-    public function dataTraining()
-    {
-        return $this->hasMany(DataTraining::class, 'id_training');
-    }
 }
